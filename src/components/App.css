@@ -1,0 +1,9 @@
+.standard {
+  fill: #b1b6c4;
+  outline: none;
+}
+
+.selected {
+  fill: rgb(65, 154, 226);
+  outline: none;
+}

@@ -1,18 +1,16 @@
-import React from 'react';
-import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
+import React, { useState, useContext } from 'react';
+import ReactTooltip from 'react-tooltip';
+import { GlobalContext } from '../context/state';
+import TooltipMap from './TooltipMap';
 
-// eslint-disable-next-line max-len
-const geoUrl = `https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json`;
 const WorldMap = () => {
-  const Geo = ({ geographies }) =>
-    geographies.map(geo => <Geography key={geo.rsmKey} geography={geo} />);
+  const { state } = useContext(GlobalContext);
+  const [tooltip, setTooltip] = useState('');
+
   return (
-    <div>
-      <div>
-        <ComposableMap>
-          <Geographies geography={geoUrl}>{Geo}</Geographies>
-        </ComposableMap>
-      </div>
+    <div className="map-viewbox">
+      <TooltipMap setTooltip={setTooltip} />
+      <ReactTooltip>{tooltip}</ReactTooltip>
     </div>
   );
 };
