@@ -6,6 +6,7 @@ import appReducer from './appReducer';
 const INITIAL_STATE = {
   Global: {},
   Countries: [],
+  UpdateDate: '',
   Country: {},
 };
 
@@ -23,10 +24,12 @@ export const GlobalProvider = ({ children }) => {
       })
       .catch(err => dispatch({ type: FETCH_ERROR, payload: err.response.data }));
   };
+
   return (
     <Provider
       value={{
         state,
+        dispatch,
         handleInitFetch,
       }}
     >
