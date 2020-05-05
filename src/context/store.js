@@ -1,6 +1,6 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, useCallback } from 'react';
 import axios from 'axios';
-import { FETCH_DATASUM, FETCH_ERROR } from './constant';
+import { FETCH_ERROR } from './constant';
 import appReducer from './appReducer';
 
 const INITIAL_STATE = {
@@ -16,21 +16,34 @@ const { Provider } = GlobalContext;
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, INITIAL_STATE);
 
-  const handleInitFetch = () => {
+  const handleFetch = useCallback((fetchType, dispatchType) => {
     axios
-      .get(`https://api.covid19api.com/summary`)
+      .get(`https://api.covid19api.com/${fetchType}`)
       .then(res => {
-        dispatch({ type: FETCH_DATASUM, payload: res.data });
+        dispatch({ type: dispatchType, payload: res.data });
       })
-      .catch(err => dispatch({ type: FETCH_ERROR, payload: err.response.data }));
-  };
+      .catch(err =>
+        dispatch({ type: FETCH_ERROR, payload: err.response.data }),
+      );
+  }, []);
+
+  // const handleInitFetch = () => {
+  //   axios
+  //     .get(`summary`)
+  //     .then(res => {
+  //       dispatch({ type: FETCH_DATASUM, payload: res.data });
+  //     })
+  //     .catch(err =>
+  //       dispatch({ type: FETCH_ERROR, payload: err.response.data }),
+  //     );
+  // };
 
   return (
     <Provider
       value={{
         state,
         dispatch,
-        handleInitFetch,
+        handleFetch,
       }}
     >
       {children}

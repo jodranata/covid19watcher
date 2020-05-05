@@ -5,11 +5,17 @@ import TooltipMap from './TooltipMap';
 
 const WorldMap = () => {
   const [tooltip, setTooltip] = useState('');
-
+  const {
+    state: { Countries },
+  } = useContext(GlobalContext);
   return (
     <div className="map-viewbox">
-      <TooltipMap setTooltip={setTooltip} />
-      <ReactTooltip>{tooltip}</ReactTooltip>
+      {Countries && (
+        <TooltipMap setTooltip={setTooltip} dataCountries={Countries} />
+      )}
+      <ReactTooltip multiline className="country-tooltip">
+        {tooltip}
+      </ReactTooltip>
     </div>
   );
 };

@@ -4,8 +4,9 @@ import { GlobalContext } from '../context/store';
 
 import './style/Header.css';
 
+const formatNumber = num => new Intl.NumberFormat().format(num);
+
 const HeaderSum = ({ summary }) => {
-  const formatNumber = num => new Intl.NumberFormat().format(num);
   const {
     NewConfirmed,
     TotalConfirmed,
@@ -41,16 +42,24 @@ const HeaderSum = ({ summary }) => {
 
   return headerData.map(({ typeCase, newCase, totalCase, colorCase }) => {
     return (
-      <div key={typeCase} className="summary-casetype" style={{ color: colorCase }}>
+      <div
+        key={typeCase}
+        className="summary-casetype"
+        style={{ color: colorCase }}
+      >
         <span className="case-title">{typeCase}</span>
         <div className="summary-casedata">
           <div className="summary-data">
             <p className="data-title">Total</p>
-            <p className="data-number">{formatNumber(totalCase)}</p>
+            <p className="data-number">
+              {totalCase ? formatNumber(totalCase) : 'Loading'}
+            </p>
           </div>
           <div className="summary-data">
             <p className="data-title">New</p>
-            <p className="data-number">{formatNumber(newCase)}</p>
+            <p className="data-number">
+              {newCase ? formatNumber(newCase) : 'Loading'}
+            </p>
           </div>
         </div>
       </div>
@@ -62,8 +71,8 @@ const Header = () => {
   const {
     state: { Global, UpdateDate },
   } = useContext(GlobalContext);
-
   const [formatDate, setFormatDate] = useState(null);
+
   useEffect(() => {
     if (UpdateDate) {
       setFormatDate(new Date(UpdateDate).toUTCString());
@@ -78,7 +87,9 @@ const Header = () => {
       </div>
       <div className="header-summary">
         <p className="summary-title">Global Cases</p>
-        {formatDate && <p className="summary-date">{`Last updated: ${formatDate}`}</p>}
+        {formatDate && (
+          <p className="summary-date">{`Last updated: ${formatDate}`}</p>
+        )}
         <div className="summary-container">
           <HeaderSum summary={Global} />
         </div>

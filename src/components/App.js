@@ -3,22 +3,18 @@ import React, { useContext, useEffect } from 'react';
 import Header from './Header';
 import WorldMap from './WorldMap';
 import { GlobalContext } from '../context/store';
+import { FETCH_DATASUM } from '../context/constant';
 
 import './style/App.css';
 
+const urlSum = 'summary';
+
 function App() {
-  const { handleInitFetch } = useContext(GlobalContext);
+  const { handleFetch } = useContext(GlobalContext);
 
   useEffect(() => {
-    // axios
-    //   .get(`https://api.covid19api.com/summary`)
-    //   .then(res => {
-    //     dispatch({ type: FETCH_DATASUM, payload: res.data });
-    //   })
-    //   .catch(err => dispatch({ type: FETCH_ERROR, payload: err.response.data }));
-    handleInitFetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    handleFetch(urlSum, FETCH_DATASUM);
+  }, [handleFetch]);
 
   return (
     <div className="App">

@@ -1,61 +1,104 @@
-import React, { useState, useEffect, memo, useContext } from 'react';
-import { ComposableMap, Geographies, Geography, Graticule } from 'react-simple-maps';
-import { scaleQuantize, scaleQuantile, scaleThreshold } from 'd3-scale';
-
-import { GlobalContext } from '../context/store';
+import React, { useState, useEffect, memo, useCallback } from 'react';
+import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
+import { scaleQuantile } from 'd3-scale';
 
 // eslint-disable-next-line max-len
 const topoJSON = `https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json`;
+const colorRange = [
+  '#EEE',
+  '#ffedea',
+  '#faded9',
+  '#fad6d0',
+  '#fac2b8',
+  '#fcb1a4',
+  '#eb9383',
+  '#e97c69',
+  '#e77662',
+  '#e26251',
+  '#dd5a43',
+  '#db4f3d',
+  '#da4834',
+  '#ca3724',
+  '#bb301e',
+  '#a32717',
+  '#8f1e0f',
+  '#570c04',
+];
+const domainRange = [
+  0,
+  1,
+  10,
+  50,
+  100,
+  200,
+  500,
+  1000,
+  2000,
+  5000,
+  10000,
+  25000,
+  50000,
+  70000,
+  80000,
+  100000,
+  150000,
+  200000,
+  350000,
+];
 
-const TooltipMap = ({ setTooltip }) => {
-  const {
-    state: { Countries },
-  } = useContext(GlobalContext);
+const formatNumber = num => new Intl.NumberFormat().format(num);
+const colorScale = scaleQuantile().domain(domainRange).range(colorRange);
+
+const TooltipMap = ({ setTooltip, dataCountries }) => {
   const [country, setCountry] = useState(null);
-  const [data, setData] = useState([]);
 
-  const allCountry = document.querySelectorAll('.standard');
-  const handleClick = e => {
+  const handleClick = useCallback(e => {
     setCountry(e.target);
-  };
+  }, []);
+  const handleMouseLeave = useCallback(() => setTooltip(''), [setTooltip]);
 
   useEffect(() => {
-    if (Countries) {
-      setData(Countries);
-    }
-  }, [Countries]);
+    const allCountry = document.querySelectorAll('.standard');
+    allCountry.forEach(el => el.classList.remove('selected'));
+    if (country) return country.classList.add('selected');
+  }, [country]);
 
-  const colorScale = scaleQuantile()
-    .domain(data.map(d => d.TotalConfirmed))
-    .range([
-      '#ffedea',
-      '#ffcec5',
-      '#ffad9f',
-      '#ff8a75',
-      '#ff5533',
-      '#e2492d',
-      '#be3d26',
-      '#9a311f',
-      '#782618',
-    ]);
   const Geo = ({ geographies }) =>
     geographies.map(geo => {
       const {
         properties: { NAME, ISO_A2 },
       } = geo;
-      const currCountry = data.find(curr => curr.CountryCode === ISO_A2);
+
+      const currCountry = dataCountries.find(
+        curr => curr.CountryCode === ISO_A2,
+      );
+      const tooltip = `
+      ${NAME} <br />
+      Confirmed: ${
+        currCountry ? formatNumber(currCountry.TotalConfirmed) : '0'
+      } <br />
+      Deaths: ${
+        currCountry ? formatNumber(currCountry.TotalDeaths) : '0'
+      } <br />
+      Recovered: ${
+        currCountry ? formatNumber(currCountry.TotalRecovered) : '0'
+      } <br />
+      `;
+
+      const handleMouseEnter = () => {
+        if (!dataCountries) return setTooltip('');
+        setTooltip(tooltip);
+      };
 
       return (
         <Geography
           key={geo.rsmKey}
           geography={geo}
-          // className="standard"
-          onMouseEnter={() => {
-            setTooltip(`${NAME} — ${currCountry.TotalConfirmed}`);
-          }}
+          className="standard"
+          onMouseEnter={handleMouseEnter}
           onClick={handleClick}
-          fill={colorScale(currCountry ? currCountry.TotalConfirmed : '#EEE')}
-          onMouseLeave={() => setTooltip('')}
+          fill={currCountry ? colorScale(currCountry.TotalConfirmed) : '#EEE'}
+          onMouseLeave={handleMouseLeave}
           style={{
             hover: {
               fill: '#F53',
@@ -70,19 +113,17 @@ const TooltipMap = ({ setTooltip }) => {
       );
     });
 
-  useEffect(() => {
-    allCountry.forEach(el => el.classList.remove('selected'));
-    if (country) return country.classList.add('selected');
-  }, [allCountry, country]);
-
   return (
     <ComposableMap
       data-tip=""
+      data-html
       width={720}
-      height={576}
-      style={{ maxWidth: '100vw', maxHeight: '90vh', border: 'solid 1px rgb(0,0,0)' }}
+      height={540}
+      style={{
+        maxWidth: '100vw',
+        maxHeight: '90vh',
+      }}
     >
-      <Graticule stroke="#e7e7e7" />
       <Geographies geography={topoJSON}>{Geo}</Geographies>
     </ComposableMap>
   );
