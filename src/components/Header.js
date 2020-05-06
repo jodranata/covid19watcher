@@ -1,78 +1,63 @@
 /* eslint-disable no-nested-ternary */
 import React, { useContext, useState, useEffect } from 'react';
+import Grid from '@material-ui/core/Grid';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { GlobalContext } from '../context/store';
-
+import HeaderSummary from './HeaderSummary';
 import './style/Header.css';
 
-const formatNumber = num => new Intl.NumberFormat().format(num);
-
-const HeaderSum = ({ summary }) => {
-  const {
-    NewConfirmed,
-    TotalConfirmed,
-    NewDeaths,
-    TotalDeaths,
-    NewRecovered,
-    TotalRecovered,
-  } = summary;
-  const caseType = ['Confirmed', 'Deaths', 'Recovered'];
-  const headerData = caseType.map(type => {
-    return {
-      typeCase: type,
-      totalCase:
-        type === 'Confirmed'
-          ? TotalConfirmed
-          : type === 'Deaths'
-          ? TotalDeaths
-          : TotalRecovered,
-      newCase:
-        type === 'Confirmed'
-          ? NewConfirmed
-          : type === 'Deaths'
-          ? NewDeaths
-          : NewRecovered,
-      colorCase:
-        type === 'Confirmed'
-          ? `rgb(92, 146, 245)`
-          : type === 'Deaths'
-          ? `inherit`
-          : `rgb(76, 201, 117)`,
-    };
-  });
-
-  return headerData.map(({ typeCase, newCase, totalCase, colorCase }) => {
-    return (
-      <div
-        key={typeCase}
-        className="summary-casetype"
-        style={{ color: colorCase }}
-      >
-        <span className="case-title">{typeCase}</span>
-        <div className="summary-casedata">
-          <div className="summary-data">
-            <p className="data-title">Total</p>
-            <p className="data-number">
-              {totalCase ? formatNumber(totalCase) : 'Loading'}
-            </p>
-          </div>
-          <div className="summary-data">
-            <p className="data-title">New</p>
-            <p className="data-number">
-              {newCase ? formatNumber(newCase) : 'Loading'}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  });
-};
+const useStyles = makeStyles({
+  appHeader: {
+    color: 'rgb(51, 51, 51)',
+    padding: '25px 0',
+    '& .app-title': {
+      textAlign: 'center',
+      marginBottom: '55px',
+    },
+  },
+  headerSummary: {
+    textAlign: 'center',
+    marginTop: '35px',
+    '& > p': {
+      margin: 0,
+    },
+    '& .summary-container': {
+      marginTop: '25px',
+      padding: '15px 5%',
+      '& .summary-casetype': {
+        '& .summary-data': {
+          margin: '10px 0',
+          position: 'relative',
+          '& .data-rate': {
+            position: 'absolute',
+            top: '25%',
+            right: '0',
+            fontSize: '0.8rem',
+            fontWeight: 400,
+            color: 'rgb(0,0,0)',
+            '& .MuiSvgIcon-root': {
+              fontSize: '2.4rem',
+            },
+          },
+        },
+        '@media (max-width: 960px)': {
+          margin: '18px 0',
+          '& .summary-casedata': {
+            padding: '0 15%',
+          },
+        },
+      },
+    },
+  },
+});
 
 const Header = () => {
   const {
-    state: { Global, UpdateDate },
+    state: { Global, UpdateDate, YesterdayGlobal },
   } = useContext(GlobalContext);
   const [formatDate, setFormatDate] = useState(null);
 
+  const classes = useStyles();
   useEffect(() => {
     if (UpdateDate) {
       setFormatDate(new Date(UpdateDate).toUTCString());
@@ -80,21 +65,21 @@ const Header = () => {
   }, [UpdateDate]);
 
   return (
-    <div className="app-header">
-      <div className="app-title">
-        <h1>Covid19Watcher</h1>
-        <p>Global tracker for Covid-19 Pandemic</p>
-      </div>
-      <div className="header-summary">
-        <p className="summary-title">Global Cases</p>
-        {formatDate && (
-          <p className="summary-date">{`Last updated: ${formatDate}`}</p>
-        )}
-        <div className="summary-container">
-          <HeaderSum summary={Global} />
-        </div>
-      </div>
-    </div>
+    <Grid container className={classes.appHeader}>
+      <Grid item xs={12}>
+        <Grid item className="app-title">
+          <h1>Covid19Watcher</h1>
+          <p>Tracker for Covid-19 Pandemic</p>
+        </Grid>
+        <Grid item className={classes.headerSummary}>
+          <p className="summary-title">Global Cases</p>
+          <p className="summary-date">{`Last updated: ${formatDate || '-'}`}</p>
+          <Grid item container xs={12} className="summary-container">
+            <HeaderSummary summary={Global} yesterdaySum={YesterdayGlobal} />
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 

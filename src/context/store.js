@@ -5,6 +5,7 @@ import appReducer from './appReducer';
 
 const INITIAL_STATE = {
   Global: {},
+  YesterdayGlobal: {},
   Countries: [],
   UpdateDate: '',
   Country: {},
@@ -16,9 +17,9 @@ const { Provider } = GlobalContext;
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, INITIAL_STATE);
 
-  const handleFetch = useCallback((fetchType, dispatchType) => {
+  const handleFetch = useCallback((URL, dispatchType) => {
     axios
-      .get(`https://api.covid19api.com/${fetchType}`)
+      .get(URL)
       .then(res => {
         dispatch({ type: dispatchType, payload: res.data });
       })

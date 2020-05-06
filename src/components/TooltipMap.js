@@ -21,8 +21,9 @@ const colorRange = [
   '#ca3724',
   '#bb301e',
   '#a32717',
-  '#8f1e0f',
-  '#570c04',
+  '#962010',
+  '#7e150a',
+  '#500800',
 ];
 const domainRange = [
   0,
@@ -43,6 +44,7 @@ const domainRange = [
   100000,
   150000,
   200000,
+  250000,
   350000,
 ];
 
@@ -75,13 +77,13 @@ const TooltipMap = ({ setTooltip, dataCountries }) => {
       const tooltip = `
       ${NAME} <br />
       Confirmed: ${
-        currCountry ? formatNumber(currCountry.TotalConfirmed) : '0'
+        currCountry ? formatNumber(currCountry.TotalConfirmed) : 'No Data'
       } <br />
       Deaths: ${
-        currCountry ? formatNumber(currCountry.TotalDeaths) : '0'
+        currCountry ? formatNumber(currCountry.TotalDeaths) : 'No Data'
       } <br />
       Recovered: ${
-        currCountry ? formatNumber(currCountry.TotalRecovered) : '0'
+        currCountry ? formatNumber(currCountry.TotalRecovered) : 'No Data'
       } <br />
       `;
 
