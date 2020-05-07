@@ -1,11 +1,12 @@
 import React, { useState, useEffect, memo, useCallback } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
+
 import { scaleQuantile } from 'd3-scale';
 
 // eslint-disable-next-line max-len
 const topoJSON = `https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json`;
 const colorRange = [
-  '#EEE',
+  '#E1E1E1',
   '#ffedea',
   '#faded9',
   '#fad6d0',

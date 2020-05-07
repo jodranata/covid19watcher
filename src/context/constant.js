@@ -1,10 +1,11 @@
 export const FETCH_DATASUM = 'FETCH_DATASUM';
 export const FETCH_ERROR = 'FETCH_ERROR';
 export const FETCH_YESTERDAYSUM = 'FETCH_YESTERDAYSUM';
+export const FETCH_GLOBALHISTORY = 'FETCH_GLOBALHISTORY';
 
-const today = new Date();
-const yesterday = new Date(today);
-const twoDaysAgo = new Date(today);
+export const today = new Date();
+export const yesterday = new Date(today);
+export const twoDaysAgo = new Date(today);
 yesterday.setDate(yesterday.getDate() - 1);
 twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
 

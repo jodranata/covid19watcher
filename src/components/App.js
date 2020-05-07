@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from 'react';
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import React, { useContext, useEffect, useCallback } from 'react';
+// import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import {
   MuiThemeProvider as ThemeProvider,
-  makeStyles,
+  unstable_createMuiStrictModeTheme as createMuiTheme,
 } from '@material-ui/core/styles/';
-
-import Header from './Header';
+import CaseStats from './CaseStats';
+import Header from './HeaderComponent/Header';
 import WorldMap from './WorldMap';
 import { GlobalContext } from '../context/store';
 import {
@@ -13,6 +13,7 @@ import {
   yesterdayISO,
   twoDaysAgoISO,
   FETCH_YESTERDAYSUM,
+  FETCH_GLOBALHISTORY,
 } from '../context/constant';
 
 import './style/App.css';
@@ -38,20 +39,26 @@ const urlSum = `https://api.covid19api.com/summary`;
 const yesterdayURL = `
   https://api.covid19api.com/world?from=${twoDaysAgoISO}&to=${yesterdayISO}`;
 
+const detailGlobalURL = `https://covid19.mathdro.id/api/daily`;
+
 function App() {
   const { handleFetch, state } = useContext(GlobalContext);
-
-  useEffect(() => {
+  const handleInitFetch = useCallback(() => {
     handleFetch(urlSum, FETCH_DATASUM);
     handleFetch(yesterdayURL, FETCH_YESTERDAYSUM);
-  }, [handleFetch]);
 
+    handleFetch(detailGlobalURL, FETCH_GLOBALHISTORY);
+  }, [handleFetch]);
+  useEffect(() => {
+    handleInitFetch();
+  }, [handleInitFetch]);
+  console.log(state);
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
         <Header />
         <WorldMap />
-        <h1>Hwllo</h1>
+        <CaseStats />
       </ThemeProvider>
     </div>
   );

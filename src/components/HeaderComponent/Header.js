@@ -2,9 +2,9 @@
 import React, { useContext, useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { GlobalContext } from '../context/store';
+import { GlobalContext } from '../../context/store';
 import HeaderSummary from './HeaderSummary';
-import './style/Header.css';
+import '../style/Header.css';
 
 const useStyles = makeStyles({
   appHeader: {
@@ -28,19 +28,50 @@ const useStyles = makeStyles({
         '& .summary-data': {
           margin: '10px 0',
           position: 'relative',
+          '& > p': {
+            margin: '8px 0',
+          },
           '& .data-rate': {
             position: 'absolute',
-            top: '25%',
-            right: '0',
-            fontSize: '0.8rem',
+
+            fontSize: '0.7rem',
+            display: 'flex',
             fontWeight: 400,
             color: 'rgb(0,0,0)',
+            '@media (max-width: 760px)': {
+              top: '-20%',
+              right: '0',
+            },
+            '@media (min-width: 760px) and (max-width: 959px)': {
+              top: '-25%',
+              right: '15%',
+            },
+            '@media (min-width: 960px)': {
+              top: '-20%',
+              right: '-10%',
+            },
+            '@media (min-width: 1160px)': {
+              top: '-20%',
+              right: '10%',
+            },
+            '& .rate-case': {
+              display: 'flex',
+              flexDirection: 'column',
+              textAlign: 'start',
+              '& .span-rate': {
+                cursor: 'pointer',
+                fontSize: '0.8rem',
+              },
+              '& .current-rate': {
+                fontSize: '1rem',
+              },
+            },
             '& .MuiSvgIcon-root': {
-              fontSize: '2.4rem',
+              fontSize: '2rem',
             },
           },
         },
-        '@media (max-width: 960px)': {
+        '@media (max-width: 959px)': {
           margin: '18px 0',
           '& .summary-casedata': {
             padding: '0 15%',

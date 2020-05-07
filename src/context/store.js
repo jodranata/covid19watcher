@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useCallback } from 'react';
 import axios from 'axios';
-import { FETCH_ERROR } from './constant';
+import { FETCH_ERROR, FETCH_DATASUM, FETCH_YESTERDAYSUM } from './constant';
 import appReducer from './appReducer';
 
 const INITIAL_STATE = {
@@ -8,7 +8,7 @@ const INITIAL_STATE = {
   YesterdayGlobal: {},
   Countries: [],
   UpdateDate: '',
-  Country: {},
+  GlobalHistory: [],
 };
 
 export const GlobalContext = createContext(INITIAL_STATE);
@@ -27,17 +27,6 @@ export const GlobalProvider = ({ children }) => {
         dispatch({ type: FETCH_ERROR, payload: err.response.data }),
       );
   }, []);
-
-  // const handleInitFetch = () => {
-  //   axios
-  //     .get(`summary`)
-  //     .then(res => {
-  //       dispatch({ type: FETCH_DATASUM, payload: res.data });
-  //     })
-  //     .catch(err =>
-  //       dispatch({ type: FETCH_ERROR, payload: err.response.data }),
-  //     );
-  // };
 
   return (
     <Provider
