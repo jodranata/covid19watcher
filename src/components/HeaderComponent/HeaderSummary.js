@@ -6,14 +6,13 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import RemoveIcon from '@material-ui/icons/Remove';
 
-import { yesterday, today } from '../../context/constant';
+import { yesterday, today, formatNumber } from '../../context/constant';
 import createHeaderData from './createHeaderData';
 import CustomTooltip from '../MuiComponent/CustomTooltip';
 
 const dateOption = { year: 'numeric', month: 'short', day: 'numeric' };
 const caseType = ['Confirmed', 'Death', 'Recovered'];
 
-const formatNumber = num => new Intl.NumberFormat().format(num);
 const tipTitle = (day, date, casesNum, casesType) => {
   const dateString = date.toLocaleDateString('en-gb', dateOption);
   const caseString = formatNumber(casesNum);

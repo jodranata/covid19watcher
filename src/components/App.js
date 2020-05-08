@@ -1,19 +1,21 @@
-import React, { useContext, useEffect, useCallback } from 'react';
+import React, { useContext, useEffect, useState, useMemo } from 'react';
 // import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import {
   MuiThemeProvider as ThemeProvider,
   unstable_createMuiStrictModeTheme as createMuiTheme,
 } from '@material-ui/core/styles/';
-import CaseStats from './CaseStats';
+import CaseStats from './StatComponent/CaseStats';
 import Header from './HeaderComponent/Header';
-import WorldMap from './WorldMap';
+import WorldMap from './MapComponent/WorldMap';
 import { GlobalContext } from '../context/store';
 import {
-  FETCH_DATASUM,
-  yesterdayISO,
-  twoDaysAgoISO,
-  FETCH_YESTERDAYSUM,
-  FETCH_GLOBALHISTORY,
+  // FETCH_DATASUM,
+  // yesterdayISO,
+  // twoDaysAgoISO,
+  // FETCH_YESTERDAYSUM,
+  // FETCH_GLOBALHISTORY,
+  // FETCH_INITIALDATA,
+  linksArr,
 } from '../context/constant';
 
 import './style/App.css';
@@ -21,10 +23,10 @@ import './style/App.css';
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: 'rgb(92, 146, 245)',
+      main: 'rgb(75, 135, 247)',
     },
     secondary: {
-      main: 'rgb(76, 201, 117)',
+      main: 'rgb(55, 194, 102)',
     },
     error: {
       main: 'rgb(245, 118, 92)',
@@ -35,30 +37,20 @@ const theme = createMuiTheme({
   },
 });
 
-const urlSum = `https://api.covid19api.com/summary`;
-const yesterdayURL = `
-  https://api.covid19api.com/world?from=${twoDaysAgoISO}&to=${yesterdayISO}`;
-
-const detailGlobalURL = `https://covid19.mathdro.id/api/daily`;
-
 function App() {
-  const { handleFetch, state } = useContext(GlobalContext);
-  const handleInitFetch = useCallback(() => {
-    handleFetch(urlSum, FETCH_DATASUM);
-    handleFetch(yesterdayURL, FETCH_YESTERDAYSUM);
+  const { handleInitFetch, state } = useContext(GlobalContext);
+  const { CountriesList } = state;
 
-    handleFetch(detailGlobalURL, FETCH_GLOBALHISTORY);
-  }, [handleFetch]);
   useEffect(() => {
-    handleInitFetch();
+    handleInitFetch(linksArr);
   }, [handleInitFetch]);
-  console.log(state);
+
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
         <Header />
         <WorldMap />
-        <CaseStats />
+        <CaseStats CountriesList={CountriesList} />
       </ThemeProvider>
     </div>
   );

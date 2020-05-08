@@ -2,6 +2,7 @@ import React, { useState, useEffect, memo, useCallback } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 
 import { scaleQuantile } from 'd3-scale';
+import { formatNumber } from '../../context/constant';
 
 // eslint-disable-next-line max-len
 const topoJSON = `https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json`;
@@ -49,7 +50,6 @@ const domainRange = [
   350000,
 ];
 
-const formatNumber = num => new Intl.NumberFormat().format(num);
 const colorScale = scaleQuantile().domain(domainRange).range(colorRange);
 
 const TooltipMap = ({ setTooltip, dataCountries }) => {
