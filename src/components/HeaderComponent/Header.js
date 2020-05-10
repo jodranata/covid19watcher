@@ -84,16 +84,17 @@ const useStyles = makeStyles({
 
 const Header = () => {
   const {
-    state: { Global, UpdateDate, YesterdayGlobal },
+    state: { todaySum, yesterdaySum },
   } = useContext(GlobalContext);
+  const { updated } = todaySum;
   const [formatDate, setFormatDate] = useState(null);
 
   const classes = useStyles();
   useEffect(() => {
-    if (UpdateDate) {
-      setFormatDate(new Date(UpdateDate).toUTCString());
+    if (updated) {
+      setFormatDate(new Date(updated).toUTCString());
     }
-  }, [UpdateDate]);
+  }, [updated]);
 
   return (
     <Grid container className={classes.appHeader}>
@@ -106,7 +107,11 @@ const Header = () => {
           <p className="summary-title">Global Cases</p>
           <p className="summary-date">{`Last updated: ${formatDate || '-'}`}</p>
           <Grid item container xs={12} className="summary-container">
-            <HeaderSummary summary={Global} yesterdaySum={YesterdayGlobal} />
+            <HeaderSummary
+              date={updated}
+              summary={todaySum}
+              yesterdaySum={yesterdaySum}
+            />
           </Grid>
         </Grid>
       </Grid>

@@ -11,12 +11,12 @@ const DataOption = ({ optList }) => {
         <Autocomplete
           id="combo-box-demo"
           options={optList}
-          getOptionLabel={option => option.Country}
+          getOptionLabel={option => option.countryName}
           style={{ width: 300 }}
           autoHighlight
           autoSelect
           debug
-          renderTags={option => option.Slug}
+          onChange={(e, v, r) => {}}
           renderInput={params => (
             <TextField {...params} label="Combo box" variant="outlined" />
           )}

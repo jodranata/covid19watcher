@@ -3,31 +3,21 @@ import React, { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '../../context/store';
 import StatChart from './StatChart';
 import DataOption from './DataOption';
+import { sortTimeline } from '../../context/constant';
 
-const dateOption = { year: 'numeric', month: 'numeric', day: 'numeric' };
-const dashDate = (str, dateOpt) => str.toLocaleDateString('en-gb', dateOpt);
-
-const CaseStats = ({ CountriesList }) => {
+const CaseStats = ({ countriesList }) => {
   const {
     handleFetch,
-    state: { GlobalHistory },
+    state: { globalHis },
   } = useContext(GlobalContext);
 
   const [optList, setOptList] = useState([]);
 
   useEffect(() => {
-    if (CountriesList) setOptList(CountriesList);
-  }, [CountriesList]);
+    if (countriesList) setOptList(countriesList);
+  }, [countriesList]);
 
-  const globalHisData = GlobalHistory.map(date => {
-    const dateFormat = new Date(date.reportDate);
-    const reportDate = dashDate(dateFormat, dateOption);
-    return {
-      totalConfirmed: date.confirmed.total,
-      totalDeaths: date.deaths.total,
-      reportDate,
-    };
-  });
+  const globalHisData = sortTimeline(globalHis);
 
   return (
     <div>

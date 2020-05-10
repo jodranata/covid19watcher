@@ -1,4 +1,5 @@
 import React, { createContext, useReducer, useCallback } from 'react';
+
 import axios from 'axios';
 import {
   FETCH_ERROR,
@@ -7,17 +8,24 @@ import {
   // FETCH_YESTERDAYSUM,
   // FETCH_COUNTRIESLIST,
   // FETCH_GLOBALHISTORY,
+  FETCH_TEST,
 } from './constant';
 import appReducer from './appReducer';
 
+const URLs = [
+  `https://disease.sh/v2/all`,
+  `https://disease.sh/v2/all?yesterday=true`,
+  `https://disease.sh/v2/countries`,
+  `https://disease.sh/v2/historical/all?lastdays=all`,
+];
+
 const INITIAL_STATE = {
-  Global: {},
-  YesterdayGlobal: {},
-  Countries: [],
-  UpdateDate: '',
-  GlobalHistory: [],
-  CountriesList: [],
-  Errors: null,
+  todaySum: {},
+  yesterdaySum: {},
+  countriesCases: [],
+  globalHis: [],
+  errors: null,
+  test: null,
 };
 
 export const GlobalContext = createContext(INITIAL_STATE);
@@ -37,11 +45,11 @@ export const GlobalProvider = ({ children }) => {
       );
   }, []);
 
-  const handleInitFetch = useCallback(links => {
+  const handleInitFetch = useCallback(() => {
     axios
-      .all(links.map(link => axios.get(link)))
+      .all(URLs.map(link => axios.get(link)))
       .then(
-        axios.spread((sumRes, yesSumRes, globalDetailRes, listRes) => {
+        axios.spread((todayRes, yesRes, countriesRes, globalHisRes) => {
           // dispatch({ type: FETCH_DATASUM, payload: sumRes.data });
           // dispatch({ type: FETCH_YESTERDAYSUM, payload: yesSumRes.data });
           // dispatch({
@@ -53,10 +61,10 @@ export const GlobalProvider = ({ children }) => {
           dispatch({
             type: FETCH_INITIALDATA,
             payload: {
-              sumRes: sumRes.data,
-              yesSumRes: yesSumRes.data,
-              globalDetailRes: globalDetailRes.data,
-              listRes: listRes.data,
+              todayRes: todayRes.data,
+              yesRes: yesRes.data,
+              countriesRes: countriesRes.data,
+              globalHisRes: globalHisRes.data,
             },
           });
         }),

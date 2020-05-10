@@ -73,18 +73,14 @@ const TooltipMap = ({ setTooltip, dataCountries }) => {
       } = geo;
 
       const currCountry = dataCountries.find(
-        curr => curr.CountryCode === ISO_A2,
+        curr => curr.countryInfo.iso2 === ISO_A2,
       );
       const tooltip = `
       ${NAME} <br />
-      Confirmed: ${
-        currCountry ? formatNumber(currCountry.TotalConfirmed) : 'No Data'
-      } <br />
-      Deaths: ${
-        currCountry ? formatNumber(currCountry.TotalDeaths) : 'No Data'
-      } <br />
+      Confirmed: ${currCountry ? formatNumber(currCountry.cases) : '0'} <br />
+      Deaths: ${currCountry ? formatNumber(currCountry.deaths) : '0'} <br />
       Recovered: ${
-        currCountry ? formatNumber(currCountry.TotalRecovered) : 'No Data'
+        currCountry ? formatNumber(currCountry.recovered) : '0'
       } <br />
       `;
 
@@ -100,7 +96,7 @@ const TooltipMap = ({ setTooltip, dataCountries }) => {
           className="standard"
           onMouseEnter={handleMouseEnter}
           onClick={handleClick}
-          fill={currCountry ? colorScale(currCountry.TotalConfirmed) : '#EEE'}
+          fill={currCountry ? colorScale(currCountry.cases) : '#EEE'}
           onMouseLeave={handleMouseLeave}
           style={{
             hover: {
@@ -120,11 +116,11 @@ const TooltipMap = ({ setTooltip, dataCountries }) => {
     <ComposableMap
       data-tip=""
       data-html
-      width={720}
+      width={860}
       height={540}
       style={{
         maxWidth: '100vw',
-        maxHeight: '90vh',
+        maxHeight: '100vh',
       }}
     >
       <Geographies geography={topoJSON}>{Geo}</Geographies>

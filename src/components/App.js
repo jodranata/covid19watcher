@@ -15,6 +15,7 @@ import {
   // FETCH_YESTERDAYSUM,
   // FETCH_GLOBALHISTORY,
   // FETCH_INITIALDATA,
+  FETCH_TEST,
   linksArr,
 } from '../context/constant';
 
@@ -39,10 +40,20 @@ const theme = createMuiTheme({
 
 function App() {
   const { handleInitFetch, state } = useContext(GlobalContext);
-  const { CountriesList } = state;
-
+  const { countriesCases } = state;
+  const [countriesList, setCountriesList] = useState([]);
   useEffect(() => {
-    handleInitFetch(linksArr);
+    if (Array.isArray(countriesCases) || countriesCases.length) {
+      const list = countriesCases.map(type => ({
+        countryName: type.country,
+        countryIso: type.countryInfo.iso2,
+        countryID: type.countryInfo._id,
+      }));
+      setCountriesList(list);
+    }
+  }, [countriesCases]);
+  useEffect(() => {
+    handleInitFetch();
   }, [handleInitFetch]);
 
   return (
@@ -50,7 +61,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <Header />
         <WorldMap />
-        <CaseStats CountriesList={CountriesList} />
+        <CaseStats countriesList={countriesList} />
       </ThemeProvider>
     </div>
   );

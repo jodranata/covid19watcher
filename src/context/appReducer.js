@@ -5,6 +5,7 @@ import {
   FETCH_GLOBALHISTORY,
   FETCH_COUNTRIESLIST,
   FETCH_INITIALDATA,
+  FETCH_TEST,
 } from './constant';
 
 // const handleInitialFetch = (state, action) => {
@@ -45,19 +46,22 @@ const handleErrorFetch = (state, action) => ({
 
 const handleFetchInitialData = (state, action) => {
   const {
-    payload: { sumRes, yesSumRes, globalDetailRes, listRes },
+    payload: { todayRes, yesRes, countriesRes, globalHisRes },
   } = action;
-  const { Global, Countries, Date: UpdateDate } = sumRes;
+
   return {
     ...state,
-    Global,
-    Countries,
-    UpdateDate,
-    YesterdayGlobal: yesSumRes[0],
-    GlobalHistory: globalDetailRes,
-    CountriesList: listRes,
+    todaySum: todayRes,
+    yesterdaySum: yesRes,
+    countriesCases: countriesRes,
+    globalHis: globalHisRes,
   };
 };
+
+const handleFetchTest = (state, action) => ({
+  ...state,
+  test: action.payload,
+});
 const appReducer = (state, action) => {
   switch (action.type) {
     // case FETCH_DATASUM:
@@ -68,6 +72,8 @@ const appReducer = (state, action) => {
     //   return handleGlobalHistoryFetch(state, action);
     // case FETCH_COUNTRIESLIST:
     //   return handleFetchCountriesList(state, action);
+    case FETCH_TEST:
+      return handleFetchTest(state, action);
     case FETCH_INITIALDATA:
       return handleFetchInitialData(state, action);
     case FETCH_ERROR:

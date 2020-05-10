@@ -10,27 +10,38 @@ import {
 import { formatNumber } from '../../context/constant';
 
 const StatChart = ({ statData }) => {
+  console.log(statData);
   return (
     <LineChart
       width={800}
-      height={500}
+      height={450}
       data={statData}
       margin={{ top: 5, right: 20, bottom: 5, left: 20 }}
     >
       <Line
         dot={false}
         type="linear"
-        dataKey="totalConfirmed"
+        dataKey="totalCases"
         stroke="rgb(245, 118, 92)"
       />
       <Line dot={false} type="linear" dataKey="totalDeaths" stroke="#000000" />
-      <CartesianGrid stroke="#CCC" />
-      <XAxis dataKey="reportDate" />
+      <Line
+        dot={false}
+        type="linear"
+        dataKey="totalRecovered"
+        stroke="rgb(55, 194, 102)"
+      />
+      {/* <CartesianGrid stroke="#CCC" strokeDasharray="5 5" /> */}
+      <XAxis dataKey="date" />
       <YAxis tickFormatter={tick => formatNumber(tick)} />
       <Tooltip
         formatter={(num, name) => [
           formatNumber(num),
-          name === 'totalConfirmed' ? 'Confirmed' : 'Deaths',
+          name === 'totalCases'
+            ? 'Confirmed'
+            : name === 'totalDeaths'
+            ? 'Deaths'
+            : 'Recovered',
         ]}
         animationEasing="ease-in"
       />

@@ -1,50 +1,48 @@
 /* eslint-disable no-nested-ternary */
-const calcRate = (New, Total) => ((New / Total) * 100).toFixed(2);
+// const calcDate = (today, select) => {
+//   const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+//   const firstDate = new Date(today);
+//   const secondDate = new Date(select);
+//   return Math.round(Math.abs((firstDate - secondDate) / oneDay));
+// };
+
+const calcRate = (cases, total, round) =>
+  ((cases / total) * 100).toFixed(round);
+
 const compareRate = (currRate, yesRate) =>
   currRate > yesRate ? 'inc' : currRate < yesRate ? 'dec' : 'const';
+const worldPop = 7800000000;
 
 const createHeaderData = (casesType, objData) => {
   const {
-    today: {
-      NewConfirmed,
-      TotalConfirmed,
-      NewDeaths,
-      TotalDeaths,
-      NewRecovered,
-      TotalRecovered,
-    },
+    today: { cases, deaths, recovered, todayCases, todayDeaths },
     yesterday: {
-      NewConfirmed: yesNewConfirmed,
-      TotalConfirmed: yesTotalConfirmed,
-      NewDeaths: yesNewDeaths,
-      TotalDeaths: yesTotalDeaths,
-      NewRecovered: yesNewRecovered,
-      TotalRecovered: yesTotalRecovered,
+      cases: yesCases,
+      deaths: yesDeaths,
+      recovered: yesRecovered,
+      todayCases: yesNewCases,
+      todayDeaths: yesNewDeaths,
     },
   } = objData;
 
-  const infRate = calcRate(NewConfirmed, TotalConfirmed);
-  const deathRate = calcRate(NewDeaths, TotalDeaths);
-  const recRate = calcRate(NewRecovered, TotalRecovered);
-  const yesInfRate = calcRate(yesNewConfirmed, yesTotalConfirmed);
-  const yesDeathRate = calcRate(yesNewDeaths, yesTotalDeaths);
-  const yesRecRate = calcRate(yesNewRecovered, yesTotalRecovered);
+  const infRate = calcRate(todayCases, worldPop, 4);
+  const deathRate = calcRate(deaths, cases, 2);
+  const recRate = calcRate(recovered, cases, 2);
+  const yesInfRate = calcRate(yesNewCases, worldPop, 4);
+  const yesDeathRate = calcRate(yesDeaths, yesCases, 2);
+  const yesRecRate = calcRate(yesRecovered, yesCases, 2);
 
   return casesType.map(type => {
     return {
       typeCase: type,
       totalCase:
-        type === 'Confirmed'
-          ? TotalConfirmed
-          : type === 'Death'
-          ? TotalDeaths
-          : TotalRecovered,
+        type === 'Confirmed' ? cases : type === 'Death' ? deaths : recovered,
       newCase:
         type === 'Confirmed'
-          ? NewConfirmed
+          ? todayCases
           : type === 'Death'
-          ? NewDeaths
-          : NewRecovered,
+          ? todayDeaths
+          : recovered - yesRecovered,
       colorCase:
         type === 'Confirmed'
           ? `rgb(92, 146, 245)`
@@ -67,10 +65,10 @@ const createHeaderData = (casesType, objData) => {
           : compareRate(recRate, yesRecRate),
       yesTotalCase:
         type === 'Confirmed'
-          ? yesTotalConfirmed
+          ? yesCases
           : type === 'Death'
-          ? yesTotalDeaths
-          : yesTotalRecovered,
+          ? yesDeaths
+          : yesRecovered,
     };
   });
 };

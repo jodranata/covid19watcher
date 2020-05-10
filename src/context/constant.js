@@ -1,10 +1,11 @@
+/* eslint-disable no-nested-ternary */
 export const FETCH_DATASUM = 'FETCH_DATASUM';
 export const FETCH_ERROR = 'FETCH_ERROR';
 export const FETCH_YESTERDAYSUM = 'FETCH_YESTERDAYSUM';
 export const FETCH_GLOBALHISTORY = 'FETCH_GLOBALHISTORY';
 export const FETCH_COUNTRIESLIST = 'FETCH_COUNTRIESLIST';
 export const FETCH_INITIALDATA = 'FETCH_INITIALDATA';
-
+export const FETCH_TEST = 'FETCH_TEST';
 export const formatNumber = num => new Intl.NumberFormat().format(num);
 export const today = new Date();
 export const yesterday = new Date(today);
@@ -33,3 +34,41 @@ export const linksArr = [
   detailGlobalURL,
   countriesListURL,
 ];
+
+const dateOption = {
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+};
+const dashDate = (str, dateOpt) => str.toLocaleDateString('en-gb', dateOpt);
+
+export const sortTimeline = obj => {
+  return Object.keys(obj)
+    .reduce((acc, curr) => {
+      const objType =
+        curr === 'cases'
+          ? 'totalCases'
+          : curr === 'deaths'
+          ? 'totalDeaths'
+          : 'totalRecovered';
+      const objDate = Object.keys(obj[curr]);
+
+      const objData = objDate.map(date => {
+        const newDate = new Date(Date.parse(date));
+        return {
+          date: dashDate(newDate, dateOption),
+          [objType]: obj[curr][date],
+        };
+      });
+      return [...acc, ...objData];
+    }, [])
+    .reduce((accu, curru) => {
+      const dateIndex = accu.findIndex(el => el.date === curru.date);
+      if (accu.length <= 0 || dateIndex === -1) {
+        return accu.concat(curru);
+      }
+      const newAccu = JSON.parse(JSON.stringify(accu));
+      newAccu[dateIndex] = { ...newAccu[dateIndex], ...curru };
+      return newAccu;
+    }, []);
+};

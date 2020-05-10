@@ -21,10 +21,10 @@ const tipTitle = (day, date, casesNum, casesType) => {
   `;
 };
 
-const HeaderSummary = ({ summary, yesterdaySum }) => {
+const HeaderSummary = ({ summary, yesterdaySum, updated }) => {
   const sumObj = { today: { ...summary }, yesterday: { ...yesterdaySum } };
 
-  const headerData = createHeaderData(caseType, sumObj);
+  const headerData = createHeaderData(caseType, sumObj, updated);
 
   return headerData.map(
     ({
