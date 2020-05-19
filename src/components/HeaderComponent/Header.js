@@ -2,7 +2,9 @@
 import React, { useContext, useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { GlobalContext } from '../../context/store';
+import CountUp from 'react-countup';
+import { InitContext } from '../../context/store';
+
 import HeaderSummary from './HeaderSummary';
 import '../style/Header.css';
 
@@ -21,6 +23,31 @@ const useStyles = makeStyles({
     '& > p': {
       margin: 0,
     },
+    '& .summary-title': {
+      maxWidth: '400px',
+      margin: '0 auto',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      '& > .title-text': {
+        display: 'block',
+        '&.text-prefix': {
+          textAlign: 'right',
+          width: '65%',
+          fontSize: '1.5rem',
+        },
+        '&.text-active': {
+          width: '34%',
+          fontSize: '1.4rem',
+          fontWeight: 500,
+          marginTop: '1px',
+          marginLeft: '3px',
+          textAlign: 'left',
+          letterSpacing: '0.5px',
+        },
+      },
+    },
+
     '& .summary-container': {
       marginTop: '25px',
       padding: '15px 5%',
@@ -33,7 +60,6 @@ const useStyles = makeStyles({
           },
           '& .data-rate': {
             position: 'absolute',
-
             fontSize: '0.7rem',
             display: 'flex',
             fontWeight: 400,
@@ -84,9 +110,9 @@ const useStyles = makeStyles({
 
 const Header = () => {
   const {
-    state: { todaySum, yesterdaySum },
-  } = useContext(GlobalContext);
-  const { updated } = todaySum;
+    initState: { todaySum, yesterdaySum },
+  } = useContext(InitContext);
+  const { updated, active } = todaySum;
   const [formatDate, setFormatDate] = useState(null);
 
   const classes = useStyles();
@@ -104,7 +130,23 @@ const Header = () => {
           <p>Tracker for Covid-19 Pandemic</p>
         </Grid>
         <Grid item className={classes.headerSummary}>
-          <p className="summary-title">Global Cases</p>
+          <div className="summary-title">
+            <div className="title-text text-prefix">Global Active Cases:</div>
+
+            <div className="title-text text-active">
+              {active ? (
+                <CountUp
+                  start={0}
+                  end={active}
+                  duration={1.8}
+                  separator=","
+                  delay={0}
+                />
+              ) : (
+                'loading'
+              )}
+            </div>
+          </div>
           <p className="summary-date">{`Last updated: ${formatDate || '-'}`}</p>
           <Grid item container xs={12} className="summary-container">
             <HeaderSummary

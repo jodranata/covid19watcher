@@ -1,0 +1,20 @@
+.overview-container {
+  width: 90vw;
+  text-align: justify;
+  font-size: 1.1rem;
+  font-weight: 400;
+  padding: 8px 14px;
+  line-height: 1.5;
+  margin: 25px auto 50px auto;
+}
+
+.overview-container > span {
+  font-size: 1.35rem;
+  font-weight: 500;
+}
+
+.overview-container > a {
+  text-decoration: none;
+  color: rgb(47, 142, 185);
+  font-weight: 700;
+}

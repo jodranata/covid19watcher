@@ -1,12 +1,4 @@
-import {
-  FETCH_DATASUM,
-  FETCH_ERROR,
-  FETCH_YESTERDAYSUM,
-  FETCH_GLOBALHISTORY,
-  FETCH_COUNTRIESLIST,
-  FETCH_INITIALDATA,
-  FETCH_TEST,
-} from './constant';
+import { FETCH_INITERROR, FETCH_INITIALDATA, INIT_LOADING } from './constant';
 
 // const handleInitialFetch = (state, action) => {
 //   // sumRes
@@ -42,6 +34,7 @@ import {
 const handleErrorFetch = (state, action) => ({
   ...state,
   Errors: action.payload,
+  initLoading: false,
 });
 
 const handleFetchInitialData = (state, action) => {
@@ -55,14 +48,16 @@ const handleFetchInitialData = (state, action) => {
     yesterdaySum: yesRes,
     countriesCases: countriesRes,
     globalHis: globalHisRes,
+    initLoading: false,
   };
 };
 
-const handleFetchTest = (state, action) => ({
+const handleStartLoading = state => ({
   ...state,
-  test: action.payload,
+  initLoading: true,
 });
-const appReducer = (state, action) => {
+
+const initReducer = (state, action) => {
   switch (action.type) {
     // case FETCH_DATASUM:
     //   return handleInitialFetch(state, action);
@@ -72,15 +67,21 @@ const appReducer = (state, action) => {
     //   return handleGlobalHistoryFetch(state, action);
     // case FETCH_COUNTRIESLIST:
     //   return handleFetchCountriesList(state, action);
-    case FETCH_TEST:
-      return handleFetchTest(state, action);
+
     case FETCH_INITIALDATA:
       return handleFetchInitialData(state, action);
-    case FETCH_ERROR:
+    case INIT_LOADING:
+      return handleStartLoading(state);
+    case FETCH_INITERROR:
       return handleErrorFetch(state, action);
 
     default:
   }
 };
 
-export default appReducer;
+export default initReducer;
+
+// const handleFetchTest = (state, action) => ({
+//   ...state,
+//   test: action.payload,
+// });

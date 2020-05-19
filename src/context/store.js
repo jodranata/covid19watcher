@@ -2,15 +2,18 @@ import React, { createContext, useReducer, useCallback } from 'react';
 
 import axios from 'axios';
 import {
-  FETCH_ERROR,
+  FETCH_INITERROR,
+  FETCH_DATAERROR,
   FETCH_INITIALDATA,
+  CLEAR_DATAERROR,
+  INIT_LOADING,
   // FETCH_DATASUM,
   // FETCH_YESTERDAYSUM,
   // FETCH_COUNTRIESLIST,
   // FETCH_GLOBALHISTORY,
-  FETCH_TEST,
 } from './constant';
-import appReducer from './appReducer';
+import initReducer from './initReducer';
+import dataReducer from './dataReducer';
 
 const URLs = [
   `https://disease.sh/v2/all`,
@@ -24,28 +27,23 @@ const INITIAL_STATE = {
   yesterdaySum: {},
   countriesCases: [],
   globalHis: [],
-  errors: null,
+  countryCases: [],
+  initErrors: null,
   test: null,
 };
 
-export const GlobalContext = createContext(INITIAL_STATE);
-const { Provider } = GlobalContext;
+const INITDATA_STATE = {
+  countryCases: [],
+  dataErrors: null,
+};
 
-export const GlobalProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(appReducer, INITIAL_STATE);
+export const InitContext = createContext(INITIAL_STATE);
 
-  const handleFetch = useCallback((URL, dispatchType) => {
-    axios
-      .get(URL)
-      .then(res => {
-        dispatch({ type: dispatchType, payload: res.data });
-      })
-      .catch(err =>
-        dispatch({ type: FETCH_ERROR, payload: err.response.data }),
-      );
-  }, []);
+export const InitProvider = ({ children }) => {
+  const [initState, initDispatch] = useReducer(initReducer, INITIAL_STATE);
 
   const handleInitFetch = useCallback(() => {
+    initDispatch({ type: INIT_LOADING });
     axios
       .all(URLs.map(link => axios.get(link)))
       .then(
@@ -58,7 +56,7 @@ export const GlobalProvider = ({ children }) => {
           // });
           // dispatch({ type: FETCH_COUNTRIESLIST, payload: listRes.data });
 
-          dispatch({
+          initDispatch({
             type: FETCH_INITIALDATA,
             payload: {
               todayRes: todayRes.data,
@@ -70,20 +68,39 @@ export const GlobalProvider = ({ children }) => {
         }),
       )
       .catch(err =>
-        dispatch({ type: FETCH_ERROR, payload: err.response.data }),
+        initDispatch({ type: FETCH_INITERROR, payload: err.response.data }),
       );
   }, []);
 
   return (
-    <Provider
+    <InitContext.Provider
       value={{
-        state,
-        dispatch,
-        handleFetch,
+        initState,
         handleInitFetch,
       }}
     >
       {children}
-    </Provider>
+    </InitContext.Provider>
+  );
+};
+
+export const DataContext = createContext(INITDATA_STATE);
+export const DataProvider = ({ children }) => {
+  const [dataState, dataDispatch] = useReducer(dataReducer, INITDATA_STATE);
+  const handleDataFetch = useCallback((URL, dispatchType) => {
+    dataDispatch({ type: CLEAR_DATAERROR });
+    axios
+      .get(URL)
+      .then(res => {
+        dataDispatch({ type: dispatchType, payload: res.data });
+      })
+      .catch(err =>
+        dataDispatch({ type: FETCH_DATAERROR, payload: err.response.data }),
+      );
+  }, []);
+  return (
+    <DataContext.Provider value={{ dataState, dataDispatch, handleDataFetch }}>
+      {children}
+    </DataContext.Provider>
   );
 };

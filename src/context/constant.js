@@ -1,11 +1,18 @@
 /* eslint-disable no-nested-ternary */
 export const FETCH_DATASUM = 'FETCH_DATASUM';
-export const FETCH_ERROR = 'FETCH_ERROR';
+export const FETCH_INITERROR = 'FETCH_INITERROR';
+
 export const FETCH_YESTERDAYSUM = 'FETCH_YESTERDAYSUM';
 export const FETCH_GLOBALHISTORY = 'FETCH_GLOBALHISTORY';
 export const FETCH_COUNTRIESLIST = 'FETCH_COUNTRIESLIST';
 export const FETCH_INITIALDATA = 'FETCH_INITIALDATA';
+export const FETCH_DATAERROR = 'FETCH_DATAERROR';
 export const FETCH_TEST = 'FETCH_TEST';
+export const FETCH_COUNTRYCASES = 'FETCH_COUNTRYCASES';
+export const CLEAR_COUNTRYCASES = 'CLEAR_COUNTRYCASES';
+export const CLEAR_DATAERROR = 'CLEAR_DATAERROR';
+export const INIT_LOADING = 'INIT_LOADING';
+
 export const formatNumber = num => new Intl.NumberFormat().format(num);
 export const today = new Date();
 export const yesterday = new Date(today);
@@ -71,4 +78,21 @@ export const sortTimeline = obj => {
       newAccu[dateIndex] = { ...newAccu[dateIndex], ...curru };
       return newAccu;
     }, []);
+};
+
+export const createCountriesList = cases => {
+  return cases.map(country => ({
+    countryName: country.country,
+    countryIso: country.countryInfo.iso2,
+    countryID: country.countryInfo._id,
+    countryCases: country.cases,
+    countryDeaths: country.deaths,
+    countryRecovered: country.recovered,
+    countryCritical: country.critical,
+    countryActive: country.active,
+    countryUpdated: country.updated,
+    countryFlag: country.countryInfo.flag,
+    countryTodayCases: country.todayCases,
+    countryTodayDeaths: country.todayDeaths,
+  }));
 };

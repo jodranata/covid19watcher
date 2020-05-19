@@ -1,25 +1,21 @@
-import React, { useContext, useEffect, useState, useMemo } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 // import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import {
   MuiThemeProvider as ThemeProvider,
   unstable_createMuiStrictModeTheme as createMuiTheme,
+  makeStyles,
 } from '@material-ui/core/styles/';
+import Dialog from '@material-ui/core/Dialog';
+import LoadingDialog from './LoadingDialog';
 import CaseStats from './StatComponent/CaseStats';
 import Header from './HeaderComponent/Header';
 import WorldMap from './MapComponent/WorldMap';
-import { GlobalContext } from '../context/store';
-import {
-  // FETCH_DATASUM,
-  // yesterdayISO,
-  // twoDaysAgoISO,
-  // FETCH_YESTERDAYSUM,
-  // FETCH_GLOBALHISTORY,
-  // FETCH_INITIALDATA,
-  FETCH_TEST,
-  linksArr,
-} from '../context/constant';
+import Overview from './Overview';
+import { InitContext, DataProvider } from '../context/store';
 
 import './style/App.css';
+import FooterComp from './FooterComp';
+import PreventionComp from './PreventionComp';
 
 const theme = createMuiTheme({
   palette: {
@@ -38,30 +34,51 @@ const theme = createMuiTheme({
   },
 });
 
+const useStyles = makeStyles({
+  dialogPaper: {
+    '& .MuiPaper-root.MuiDialog-paper': {
+      width: '90vw',
+      height: '90vh',
+      backgroundColor: 'rgb(72,72,72)',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  },
+});
+
 function App() {
-  const { handleInitFetch, state } = useContext(GlobalContext);
-  const { countriesCases } = state;
-  const [countriesList, setCountriesList] = useState([]);
-  useEffect(() => {
-    if (Array.isArray(countriesCases) || countriesCases.length) {
-      const list = countriesCases.map(type => ({
-        countryName: type.country,
-        countryIso: type.countryInfo.iso2,
-        countryID: type.countryInfo._id,
-      }));
-      setCountriesList(list);
-    }
-  }, [countriesCases]);
+  const {
+    handleInitFetch,
+    initState: { initLoading },
+  } = useContext(InitContext);
+
+  const classes = useStyles();
+
+  const [open, setOpen] = useState(false);
+
   useEffect(() => {
     handleInitFetch();
   }, [handleInitFetch]);
 
+  useEffect(() => {
+    if (initLoading) setOpen(true);
+    else setOpen(false);
+  }, [initLoading]);
+
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
+        <Dialog open={open} className={classes.dialogPaper} maxWidth="xl">
+          <LoadingDialog />
+        </Dialog>
         <Header />
         <WorldMap />
-        <CaseStats countriesList={countriesList} />
+        <Overview />
+        <DataProvider>
+          <CaseStats />
+        </DataProvider>
+        <PreventionComp />
+        <FooterComp />
       </ThemeProvider>
     </div>
   );

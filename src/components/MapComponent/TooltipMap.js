@@ -7,25 +7,26 @@ import { formatNumber } from '../../context/constant';
 // eslint-disable-next-line max-len
 const topoJSON = `https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json`;
 const colorRange = [
-  '#E1E1E1',
-  '#ffedea',
-  '#faded9',
-  '#fad6d0',
-  '#fac2b8',
-  '#fcb1a4',
-  '#eb9383',
-  '#e97c69',
-  '#e77662',
-  '#e26251',
-  '#dd5a43',
-  '#db4f3d',
-  '#da4834',
-  '#ca3724',
-  '#bb301e',
-  '#a32717',
-  '#962010',
-  '#7e150a',
-  '#500800',
+  '#b1b0b0',
+  '#fffeb5',
+  '#fffda0',
+  '#fcfa8f',
+  '#ffd079',
+  '#ffb067',
+  '#ffa34d',
+  '#ff9838',
+  '#ff8a2a',
+  '#ff6a13',
+  '#ff5709',
+  '#f34500',
+  '#f13000',
+  '#e42200',
+  '#d82000',
+  '#c71700',
+  '#bd0600',
+  '#a70404',
+  '#920000',
+  '#520000',
 ];
 const domainRange = [
   0,
@@ -48,6 +49,7 @@ const domainRange = [
   200000,
   250000,
   350000,
+  500000,
 ];
 
 const colorScale = scaleQuantile().domain(domainRange).range(colorRange);
@@ -58,6 +60,7 @@ const TooltipMap = ({ setTooltip, dataCountries }) => {
   const handleClick = useCallback(e => {
     setCountry(e.target);
   }, []);
+
   const handleMouseLeave = useCallback(() => setTooltip(''), [setTooltip]);
 
   useEffect(() => {
@@ -73,14 +76,18 @@ const TooltipMap = ({ setTooltip, dataCountries }) => {
       } = geo;
 
       const currCountry = dataCountries.find(
-        curr => curr.countryInfo.iso2 === ISO_A2,
+        curr => curr.countryIso === ISO_A2,
       );
       const tooltip = `
       ${NAME} <br />
-      Confirmed: ${currCountry ? formatNumber(currCountry.cases) : '0'} <br />
-      Deaths: ${currCountry ? formatNumber(currCountry.deaths) : '0'} <br />
+      Confirmed: ${
+        currCountry ? formatNumber(currCountry.countryCases) : '0'
+      } <br />
+      Deaths: ${
+        currCountry ? formatNumber(currCountry.countryDeaths) : '0'
+      } <br />
       Recovered: ${
-        currCountry ? formatNumber(currCountry.recovered) : '0'
+        currCountry ? formatNumber(currCountry.countryRecovered) : '0'
       } <br />
       `;
 
@@ -95,8 +102,7 @@ const TooltipMap = ({ setTooltip, dataCountries }) => {
           geography={geo}
           className="standard"
           onMouseEnter={handleMouseEnter}
-          onClick={handleClick}
-          fill={currCountry ? colorScale(currCountry.cases) : '#EEE'}
+          fill={currCountry ? colorScale(currCountry.countryCases) : '#b1b1b1'}
           onMouseLeave={handleMouseLeave}
           style={{
             hover: {

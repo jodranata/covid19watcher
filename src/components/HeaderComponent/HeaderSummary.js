@@ -6,6 +6,8 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import RemoveIcon from '@material-ui/icons/Remove';
 
+import CountUp from 'react-countup';
+
 import { yesterday, today, formatNumber } from '../../context/constant';
 import createHeaderData from './createHeaderData';
 import CustomTooltip from '../MuiComponent/CustomTooltip';
@@ -53,13 +55,33 @@ const HeaderSummary = ({ summary, yesterdaySum, updated }) => {
             <Grid item xs={6} className="summary-data">
               <p className="data-title">Total</p>
               <p className="data-number">
-                {totalCase ? formatNumber(totalCase) : 'Loading'}
+                {totalCase !== undefined ? (
+                  <CountUp
+                    start={0}
+                    end={totalCase}
+                    duration={1.8}
+                    separator=","
+                    delay={0}
+                  />
+                ) : (
+                  'Loading'
+                )}
               </p>
             </Grid>
             <Grid item xs={6} className="summary-data">
               <p className="data-title">New</p>
               <p className="data-number">
-                {newCase !== undefined ? formatNumber(newCase) : 'Loading'}
+                {newCase !== undefined && Number.isNaN(newCase) === false ? (
+                  <CountUp
+                    start={0}
+                    end={newCase}
+                    duration={1.8}
+                    separator=","
+                    delay={0}
+                  />
+                ) : (
+                  'Loading'
+                )}
               </p>
               <span className="data-rate">
                 {compareCase === 'inc' ? (
@@ -86,7 +108,11 @@ const HeaderSummary = ({ summary, yesterdaySum, updated }) => {
                     arrow
                   >
                     <span className="span-rate" data-html>
-                      {`(${newCase !== undefined ? yesRateCase : '-'}%)`}
+                      {`(${
+                        newCase !== undefined && Number.isNaN(newCase) === false
+                          ? yesRateCase
+                          : '-'
+                      }%)`}
                     </span>
                   </CustomTooltip>
                   <CustomTooltip
@@ -96,7 +122,11 @@ const HeaderSummary = ({ summary, yesterdaySum, updated }) => {
                     arrow
                   >
                     <span className="current-rate span-rate" data-html>
-                      {`${newCase !== undefined ? rateCase : '-'} %`}
+                      {`${
+                        newCase !== undefined && Number.isNaN(newCase) === false
+                          ? rateCase
+                          : '-'
+                      } %`}
                     </span>
                   </CustomTooltip>
                 </div>
