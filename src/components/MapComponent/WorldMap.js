@@ -24,7 +24,6 @@ const WorldMap = () => {
       {countriesCases && (
         <TooltipMap setTooltip={setTooltip} dataCountries={countriesList} />
       )}
-
       <ReactTooltip multiline className="country-tooltip">
         {tooltip}
       </ReactTooltip>
